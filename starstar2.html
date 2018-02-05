@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>星星还是那个星星</title>
+    <style>
+        .rating{
+            width:200px;
+            height:36px;
+            cursor: pointer;
+        }
+        .rating-item{
+            background: url("images/star_s.png");
+            background-position: 0 0;
+            list-style: none;
+            width: 36px;
+            height:36px;
+            float: left;
+        }
+        .change{
+            background: url("images/star_s.png");
+            background-position: -40px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="star">
+    <ul id="rating" class="rating">
+        <li class="rating-item" title="差"></li>
+        <li class="rating-item" title="不好"></li>
+        <li class="rating-item" title="一般"></li>
+        <li class="rating-item" title="好"></li>
+        <li class="rating-item" title="贼带劲"></li>
+    </ul>
+    <ul id="rating2" class="rating">
+        <li class="rating-item" title="差"></li>
+        <li class="rating-item" title="不好"></li>
+        <li class="rating-item" title="一般"></li>
+        <li class="rating-item" title="好"></li>
+        <li class="rating-item" title="贼带劲"></li>
+    </ul>
+</div>
+</body>
+<script src="js/jquery-1.8.0.min.js"></script>
+<script>
+    var rating = (function(){
+        // 自己的思路;
+//        var ul = $(".rating");
+//        var li = $(".rating-item");
+//        li.eq(0).addClass("change");
+//        li.eq(1).addClass("change");
+//        ul.find("li").click(function(){
+//            //$(".inform_tabbox").eq($(this).index()).show().siblings().hide();
+////            alert(li.eq($(this).index()).index());
+////            li.eq($(this).index()).css("backgroud-position","0px 0px");
+////            li.eq($(this).index()).toggleClass("change");
+//        })
+
+
+        var init = function(el,num){
+                  var $rating = $(el),
+                    $item = $rating.find(".rating-item")
+
+            // 点亮;
+            function lightOn($item,num){
+                $item.each(function(index){
+                    if(index < num){
+                        $(this).css("background-position","-36px 0");
+                    } else{
+                        $(this).css("background-position","0px 0");
+                    }
+                })
+            };
+
+            // 初始化:
+            lightOn($item,num);
+
+            // 事件绑定;(子集的事件委托给了父级!)
+            $rating.on("mouseover",".rating-item",function(){ //移动到第几个星星
+                lightOn($item,$(this).index() + 1);
+            }).on("click",".rating-item",function(){// 点击点亮几个星星
+                num = $(this).index() + 1;
+                console.log(num);
+            }).on("mouseout",function(){//鼠标移出,点亮默认数量的星星;
+                lightOn($item,num);
+            });
+        }
+
+        //jQuery 插件:
+        $.fn.extend({
+            rating:function(num){
+                return this.each(function(){
+                    init(this,num);
+                })
+            }
+        })
+        return {
+            init:init
+        }
+
+
+    })()
+    rating.init("#rating",2);
+//    rating.init("#rating2",3);
+    $("#rating2").rating(1);
+</script>
+</html>
